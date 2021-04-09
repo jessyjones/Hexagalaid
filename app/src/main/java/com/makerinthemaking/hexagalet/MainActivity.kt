@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         title = "Hexagalet"
+        Log.e("Hexagalet","starting up")
 
         myListView = findViewById(R.id.MainlistView) as ListView
         var installedApps = getInstalledApps();
@@ -79,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             val appImage = packageInfo.applicationInfo.loadIcon(packageManager)
             val app = AppSetting(appName, appImage)
             apps.add(app)
-            Log.e("App List$i", appName)
+       //     Log.e("App List$i", appName)
         }
         return apps ;
     }
