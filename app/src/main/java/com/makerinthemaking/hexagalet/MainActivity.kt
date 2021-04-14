@@ -1,23 +1,22 @@
 package com.makerinthemaking.hexagalet
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
+import android.content.Intent
 import android.graphics.drawable.Drawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
-//    lateinit var listView: ListView
-//    var arrayAdapter: ArrayAdapter<*>? = null
 
+    private lateinit var loggingTag: String ;
 
-
-    class AppSetting (private var name:String, private var image: Drawable) {
+    class AppSetting(private var name: String, private var image: Drawable) {
 
         fun getName(): String { return name  }
         fun getImage(): Drawable { return image  }
@@ -48,7 +47,11 @@ class MainActivity : AppCompatActivity() {
             img.setImageDrawable(currentAppSetting.getImage())
 
             //handle itemclicks for the ListView
-            view.setOnClickListener { Toast.makeText(c, currentAppSetting.getName(), Toast.LENGTH_SHORT).show() }
+            view.setOnClickListener { Toast.makeText(
+                c,
+                currentAppSetting.getName(),
+                Toast.LENGTH_SHORT
+            ).show() }
 
             return view
         }
@@ -60,14 +63,23 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        title = "Hexagalet"
+        loggingTag = getString(R.string.app_name)
+        Log.i(loggingTag, "starting up")
 
-        myListView = findViewById(R.id.MainlistView) as ListView
+        myListView = findViewById(R.id.MainListView) as ListView
         var installedApps = getInstalledApps();
         adapter = CustomAdapter(this, installedApps)
         myListView.adapter = adapter
-    }
 
+        Handler().postDelayed({
+            val intent = Intent(this, ScannerActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            startActivity(intent)
+            finish()
+        }, 1000)
+
+
+    }
 
     private fun getInstalledApps() :ArrayList<AppSetting>{
         val list = packageManager.getInstalledPackages(0)
@@ -79,7 +91,7 @@ class MainActivity : AppCompatActivity() {
             val appImage = packageInfo.applicationInfo.loadIcon(packageManager)
             val app = AppSetting(appName, appImage)
             apps.add(app)
-            Log.e("App List$i", appName)
+       //     Log.e(LoggingTag + "App List$i", appName)
         }
         return apps ;
     }
