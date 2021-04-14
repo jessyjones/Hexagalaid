@@ -31,9 +31,7 @@ public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
     private boolean filterUuidRequired;
     private boolean filterNearbyOnly;
 
-    /* package */ DevicesLiveData(final boolean filterUuidRequired, final boolean filterNearbyOnly) {
-        this.filterUuidRequired = filterUuidRequired;
-        this.filterNearbyOnly = filterNearbyOnly;
+    /* package */ DevicesLiveData() {
     }
 
     /* package */ synchronized void bluetoothDisabled() {
@@ -42,15 +40,6 @@ public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
         postValue(null);
     }
 
-    /* package */  boolean filterByUuid(final boolean uuidRequired) {
-        filterUuidRequired = uuidRequired;
-        return applyFilter();
-    }
-
-    /* package */  boolean filterByDistance(final boolean nearbyOnly) {
-        filterNearbyOnly = nearbyOnly;
-        return applyFilter();
-    }
 
     /* package */ synchronized boolean deviceDiscovered(@NonNull final ScanResult result) {
         DiscoveredBluetoothDevice device;
@@ -69,7 +58,7 @@ public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
 
         // Return true if the device was on the filtered list or is to be added.
         return (filteredDevices != null && filteredDevices.contains(device))
-                || (matchesUuidFilter(result) && matchesNearbyFilter(device.getHighestRssi()));
+                || (matchesUuidFilter(result));
     }
 
     /**
@@ -88,7 +77,7 @@ public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
         final List<DiscoveredBluetoothDevice> tmp = new ArrayList<>();
         for (final DiscoveredBluetoothDevice device : devices) {
             final ScanResult result = device.getScanResult();
-            if (matchesUuidFilter(result) && matchesNearbyFilter(device.getHighestRssi())) {
+            if (matchesUuidFilter(result)) {
                 tmp.add(device);
             }
         }
@@ -114,6 +103,7 @@ public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
     }
 
     @SuppressWarnings("SimplifiableIfStatement")
+    // TODO : add own filter
     private boolean matchesUuidFilter(@NonNull final ScanResult result) {
         if (!filterUuidRequired)
             return true;
@@ -129,11 +119,5 @@ public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
         return uuids.contains(FILTER_UUID);
     }
 
-    @SuppressWarnings("SimplifiableIfStatement")
-    private boolean matchesNearbyFilter(final int rssi) {
-        if (!filterNearbyOnly)
-            return true;
 
-        return rssi >= FILTER_RSSI;
-    }
 }

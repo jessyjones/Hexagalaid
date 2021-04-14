@@ -2,7 +2,10 @@ package com.makerinthemaking.hexagalet;
 
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -78,6 +82,7 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
+//        scannerViewModel.filterByUuid(false);
         final DevicesAdapter adapter = new DevicesAdapter(this, scannerViewModel.getDevices());
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
@@ -96,34 +101,14 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
     }
 
     @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.filter, menu);
-        menu.findItem(R.id.filter_uuid).setChecked(scannerViewModel.isUuidFilterEnabled());
-        menu.findItem(R.id.filter_nearby).setChecked(scannerViewModel.isNearbyFilterEnabled());
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.filter_uuid:
-                item.setChecked(!item.isChecked());
-                scannerViewModel.filterByUuid(item.isChecked());
-                return true;
-            case R.id.filter_nearby:
-                item.setChecked(!item.isChecked());
-                scannerViewModel.filterByDistance(item.isChecked());
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onItemClick(@NonNull final DiscoveredBluetoothDevice device) {
-    /*    final Intent controlBlinkIntent = new Intent(this, BlinkyActivity.class);
-        controlBlinkIntent.putExtra(BlinkyActivity.EXTRA_DEVICE, device);
+
+       final Intent controlBlinkIntent = new Intent(this, GaletActivity.class);
+        controlBlinkIntent.putExtra(GaletActivity.EXTRA_DEVICE, device);
         startActivity(controlBlinkIntent);
-        */
+
+
+
 
     }
 

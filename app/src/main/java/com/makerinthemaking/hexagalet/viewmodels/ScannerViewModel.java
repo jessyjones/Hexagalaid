@@ -24,8 +24,6 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 import no.nordicsemi.android.support.v18.scanner.ScanSettings;
 
 public class ScannerViewModel extends AndroidViewModel {
-    private static final String PREFS_FILTER_UUID_REQUIRED = "filter_uuid";
-    private static final String PREFS_FILTER_NEARBY_ONLY = "filter_nearby";
 
     /**
      * MutableLiveData containing the list of devices.
@@ -50,12 +48,10 @@ public class ScannerViewModel extends AndroidViewModel {
         super(application);
         preferences = PreferenceManager.getDefaultSharedPreferences(application);
 
-        final boolean filterUuidRequired = isUuidFilterEnabled();
-        final boolean filerNearbyOnly = isNearbyFilterEnabled();
 
         scannerStateLiveData = new ScannerStateLiveData(Utils.isBleEnabled(),
                 Utils.isLocationEnabled(application));
-        devicesLiveData = new DevicesLiveData(filterUuidRequired, filerNearbyOnly);
+        devicesLiveData = new DevicesLiveData();
         registerBroadcastReceivers(application);
     }
 
@@ -69,13 +65,6 @@ public class ScannerViewModel extends AndroidViewModel {
         }
     }
 
-    public boolean isUuidFilterEnabled() {
-        return preferences.getBoolean(PREFS_FILTER_UUID_REQUIRED, true);
-    }
-
-    public boolean isNearbyFilterEnabled() {
-        return preferences.getBoolean(PREFS_FILTER_NEARBY_ONLY, false);
-    }
 
     /**
      * Forces the observers to be notified. This method is used to refresh the screen after the
@@ -86,36 +75,7 @@ public class ScannerViewModel extends AndroidViewModel {
         scannerStateLiveData.refresh();
     }
 
-    /**
-     * Updates the device filter. Devices that once passed the filter will still be shown
-     * even if they move away from the phone, or change the advertising packet. This is to
-     * avoid removing devices from the list.
-     *
-     * @param uuidRequired if true, the list will display only devices with Led-Button Service UUID
-     *                     in the advertising packet.
-     */
-    public void filterByUuid(final boolean uuidRequired) {
-        preferences.edit().putBoolean(PREFS_FILTER_UUID_REQUIRED, uuidRequired).apply();
-        if (devicesLiveData.filterByUuid(uuidRequired))
-            scannerStateLiveData.recordFound();
-        else
-            scannerStateLiveData.clearRecords();
-    }
 
-    /**
-     * Updates the device filter. Devices that once passed the filter will still be shown
-     * even if they move away from the phone, or change the advertising packet. This is to
-     * avoid removing devices from the list.
-     *
-     * @param nearbyOnly if true, the list will show only devices with high RSSI.
-     */
-    public void filterByDistance(final boolean nearbyOnly) {
-        preferences.edit().putBoolean(PREFS_FILTER_NEARBY_ONLY, nearbyOnly).apply();
-        if (devicesLiveData.filterByDistance(nearbyOnly))
-            scannerStateLiveData.recordFound();
-        else
-            scannerStateLiveData.clearRecords();
-    }
 
     /**
      * Start scanning for Bluetooth devices.

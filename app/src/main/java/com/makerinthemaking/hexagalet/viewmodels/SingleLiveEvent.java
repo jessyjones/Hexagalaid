@@ -21,7 +21,7 @@ import androidx.lifecycle.Observer;
  * <p>
  * Note that only one observer is going to be notified of changes.
  */
-@SuppressWarnings("unused")
+/*
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
     private static final String TAG = "SingleLiveEvent";
@@ -50,11 +50,9 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
         super.setValue(t);
     }
 
-    /**
-     * Used for cases where T is Void, to make calls cleaner.
-     */
     @MainThread
     public void call() {
         setValue(null);
     }
 }
+*/
