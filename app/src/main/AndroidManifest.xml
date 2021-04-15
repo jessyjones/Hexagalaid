@@ -16,7 +16,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--
         <service android:name=".NotificationListener"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
@@ -28,7 +27,6 @@
                 android:value="1,2">
             </meta-data>
         </service>
-        -->
         <activity
             android:name=".ScannerActivity"
             android:label="@string/feature_name"
@@ -51,6 +49,7 @@
         </activity>
 
 
+        <service android:name=".GaletService" />
     </application>
 
 </manifest>

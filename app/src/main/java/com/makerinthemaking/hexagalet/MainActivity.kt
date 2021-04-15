@@ -66,11 +66,11 @@ class MainActivity : AppCompatActivity() {
         loggingTag = getString(R.string.app_name)
         Log.i(loggingTag, "starting up")
 
-        myListView = findViewById(R.id.MainListView) as ListView
+     /*   myListView = findViewById(R.id.MainListView) as ListView
         var installedApps = getInstalledApps();
         adapter = CustomAdapter(this, installedApps)
         myListView.adapter = adapter
-
+*/
         Handler().postDelayed({
             val intent = Intent(this, ScannerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)

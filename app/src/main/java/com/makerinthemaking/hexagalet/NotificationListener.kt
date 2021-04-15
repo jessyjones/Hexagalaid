@@ -1,17 +1,14 @@
 package com.makerinthemaking.hexagalet
 
-import android.app.Notification
-import android.app.PendingIntent
-import android.app.Service
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.makerinthemaking.hexagalet.constants.Constants
 
-/*
+
 class NotificationListener : NotificationListenerService() {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -33,7 +30,18 @@ class NotificationListener : NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification): Unit{
-        Log.i("Listener","got notification from "+ sbn.packageName + " at " +sbn.postTime)
+        Log.i("Listener", "got notification from " + sbn.packageName + " at " + sbn.postTime)
+        val messageIntent = Intent(this, GaletService::class.java)
+        messageIntent.action = Constants.SENDTEXT
+        if(sbn.packageName.equals("com.Slack"))
+        {
+            messageIntent.putExtra(GaletService.EXTRA_MSG, "2")
+        }
+        else
+        {
+            messageIntent.putExtra(GaletService.EXTRA_MSG, "1")
+        }
+        startService(messageIntent);
     }
 
-}*/
+}

@@ -18,7 +18,6 @@ public class GaletViewModel extends AndroidViewModel {
 
     public GaletViewModel(@NonNull final Application application) {
         super(application);
-
         // Initialize the manager.
         galetManager = new GaletManager(getApplication());
     }
@@ -27,16 +26,10 @@ public class GaletViewModel extends AndroidViewModel {
         return galetManager.getState();
     }
 
-
     public LiveData<Integer> getBatteryState() {
         return galetManager.getBatteryState();
     }
 
-    /**
-     * Connect to the given peripheral.
-     *
-     * @param target the target device.
-     */
     public void connect(@NonNull final DiscoveredBluetoothDevice target) {
         // Prevent from calling again when called again (screen orientation changed).
         if (device == null) {
@@ -45,11 +38,6 @@ public class GaletViewModel extends AndroidViewModel {
         }
     }
 
-    /**
-     * Reconnects to previously connected device.
-     * If this device was not supported, its services were cleared on disconnection, so
-     * reconnection may help.
-     */
     public void reconnect() {
         if (device != null) {
             galetManager.connect(device)
@@ -59,9 +47,6 @@ public class GaletViewModel extends AndroidViewModel {
         }
     }
 
-    /**
-     * Disconnect from peripheral.
-     */
     private void disconnect() {
         device = null;
         galetManager.disconnect().enqueue();

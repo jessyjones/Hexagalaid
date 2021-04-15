@@ -2,16 +2,13 @@ package com.makerinthemaking.hexagalet;
 
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -19,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,16 +23,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.makerinthemaking.hexagalet.adapter.DevicesAdapter;
+import com.makerinthemaking.hexagalet.adapter.DiscoveredBluetoothDevice;
+import com.makerinthemaking.hexagalet.constants.Constants;
+import com.makerinthemaking.hexagalet.utils.Utils;
+import com.makerinthemaking.hexagalet.viewmodels.ScannerStateLiveData;
+import com.makerinthemaking.hexagalet.viewmodels.ScannerViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.makerinthemaking.hexagalet.adapter.DevicesAdapter ;
-import com.makerinthemaking.hexagalet.adapter.DiscoveredBluetoothDevice ;
-import com.makerinthemaking.hexagalet.utils.Utils ;
-import com.makerinthemaking.hexagalet.viewmodels.ScannerStateLiveData ;
-import com.makerinthemaking.hexagalet.viewmodels.ScannerViewModel ;
-import com.makerinthemaking.hexagalet.adapter.DiscoveredBluetoothDevice ;
 
 public class ScannerActivity extends AppCompatActivity implements DevicesAdapter.OnItemClickListener {
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1022; // random number
@@ -53,6 +49,7 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
 
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
         ButterKnife.bind(this);
@@ -103,13 +100,29 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
     @Override
     public void onItemClick(@NonNull final DiscoveredBluetoothDevice device) {
 
+/*
        final Intent controlBlinkIntent = new Intent(this, GaletActivity.class);
         controlBlinkIntent.putExtra(GaletActivity.EXTRA_DEVICE, device);
         startActivity(controlBlinkIntent);
 
+*/
+        Log.d("ScannerActivity", "Launching");
 
+        Intent i = new Intent(this, GaletService.class);
+        i.putExtra(GaletActivity.EXTRA_DEVICE, device);
+        i.setAction(Constants.STARTFOREGROUND_ACTION);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(i);
+        } else {
+            startService(i);
+        }
 
+        /*final Intent controlBlinkIntent = new Intent(this, GaletService.class);
+        controlBlinkIntent.putExtra(GaletActivity.EXTRA_DEVICE, device);
+        startForegroundService(controlBlinkIntent);
+
+         */
     }
 
     @Override
