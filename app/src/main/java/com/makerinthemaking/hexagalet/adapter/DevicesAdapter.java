@@ -11,13 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.makerinthemaking.hexagalet.R;
+import com.makerinthemaking.hexagalet.activities.ScannerActivity;
+import com.makerinthemaking.hexagalet.viewmodels.DevicesLiveData;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.makerinthemaking.hexagalet.R ;
-import com.makerinthemaking.hexagalet.ScannerActivity ;
-import com.makerinthemaking.hexagalet.viewmodels.DevicesLiveData ;
 
 
 @SuppressWarnings("unused")

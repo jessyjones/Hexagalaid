@@ -1,7 +1,10 @@
-package com.makerinthemaking.hexagalet
+package com.makerinthemaking.hexagalet.activities
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.Color.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
@@ -11,6 +14,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toBitmap
+import androidx.palette.graphics.Palette
+import com.makerinthemaking.hexagalet.R
+import com.makerinthemaking.hexagalet.activities.ScannerActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -66,12 +73,12 @@ class MainActivity : AppCompatActivity() {
         loggingTag = getString(R.string.app_name)
         Log.i(loggingTag, "starting up")
 
-     /*   myListView = findViewById(R.id.MainListView) as ListView
+  /*      myListView = findViewById(R.id.MainListView) as ListView
         var installedApps = getInstalledApps();
         adapter = CustomAdapter(this, installedApps)
         myListView.adapter = adapter
-*/
-        Handler().postDelayed({
+
+   */     Handler().postDelayed({
             val intent = Intent(this, ScannerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
@@ -91,7 +98,10 @@ class MainActivity : AppCompatActivity() {
             val appImage = packageInfo.applicationInfo.loadIcon(packageManager)
             val app = AppSetting(appName, appImage)
             apps.add(app)
-       //     Log.e(LoggingTag + "App List$i", appName)
+            val color = Palette.from(appImage.toBitmap(50,50)).generate().getVibrantColor(Color.WHITE);
+            Log.d("PaletteApp List $i", appName)
+            var message = """Color = ${red(color)} - ${green(color)} - ${blue(color)} """
+            Log.d("Palette", message)
         }
         return apps ;
     }

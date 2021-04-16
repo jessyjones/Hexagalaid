@@ -1,4 +1,4 @@
-package com.makerinthemaking.hexagalet
+package com.makerinthemaking.hexagalet.services
 
 import android.content.Intent
 import android.os.Build
@@ -7,6 +7,7 @@ import android.service.notification.StatusBarNotification
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.makerinthemaking.hexagalet.constants.Constants
+import com.makerinthemaking.hexagalet.services.GaletService
 
 
 class NotificationListener : NotificationListenerService() {
@@ -35,11 +36,15 @@ class NotificationListener : NotificationListenerService() {
         messageIntent.action = Constants.SENDTEXT
         if(sbn.packageName.equals("com.Slack"))
         {
-            messageIntent.putExtra(GaletService.EXTRA_MSG, "2")
+            messageIntent.putExtra(GaletService.EXTRA_MSG, "f:0000ff:00ff00/")
+        }
+        else if(sbn.packageName.equals("com.zulipmobile"))
+        {
+            messageIntent.putExtra(GaletService.EXTRA_MSG, "f:0000ff:00ff00/")
         }
         else
         {
-            messageIntent.putExtra(GaletService.EXTRA_MSG, "1")
+            messageIntent.putExtra(GaletService.EXTRA_MSG, "f:ff00ff:00ff00/")
         }
         startService(messageIntent);
     }

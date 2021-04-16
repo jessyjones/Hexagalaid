@@ -1,4 +1,4 @@
-package com.makerinthemaking.hexagalet;
+package com.makerinthemaking.hexagalet.services;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -17,6 +17,8 @@ import androidx.lifecycle.LifecycleService;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
+import com.makerinthemaking.hexagalet.R;
+import com.makerinthemaking.hexagalet.activities.MainActivity;
 import com.makerinthemaking.hexagalet.adapter.DiscoveredBluetoothDevice;
 import com.makerinthemaking.hexagalet.constants.Constants;
 import com.makerinthemaking.hexagalet.profile.GaletManager;
@@ -66,15 +68,14 @@ public class GaletService extends LifecycleService {
 
         Intent playIntent = new Intent(this, GaletService.class);
         playIntent.setAction(Constants.SENDHELLO);
-        playIntent.putExtra(GaletService.EXTRA_MSG, "3");
         PendingIntent pendingPlayIntent = PendingIntent.getService(this, 0, playIntent, 0);
         NotificationCompat.Action playAction = new NotificationCompat.Action(android.R.drawable.ic_media_play, "Hi", pendingPlayIntent);
 
         Intent messageIntent = new Intent(this, GaletService.class);
         messageIntent.setAction(Constants.SENDTEXT);
-        messageIntent.putExtra(GaletService.EXTRA_MSG, "3");
+        messageIntent.putExtra(GaletService.EXTRA_MSG, "f:0000ff:00ff00/");
         PendingIntent pendingMsgIntent = PendingIntent.getService(this, 0, messageIntent, 0);
-        NotificationCompat.Action msgAction = new NotificationCompat.Action(android.R.drawable.ic_media_play, "Msg", pendingMsgIntent);
+        NotificationCompat.Action msgAction = new NotificationCompat.Action(android.R.drawable.ic_media_play, "Message", pendingMsgIntent);
 
 
         // TODO : add real icons
@@ -124,12 +125,12 @@ public class GaletService extends LifecycleService {
         else if (intent.getAction().equals(Constants.SENDHELLO))
         {
             Log.d(TAG, "Send hello");
-            setPixel("2");
+            setPixel("w:ffffff:00ff00/");
             return START_NOT_STICKY ;
         }
         else if (intent.getAction().equals(Constants.SENDTEXT))
         {
-            Log.d(TAG, "Send hello");
+            Log.d(TAG, "Send command");
             final String message = intent.getStringExtra(GaletService.EXTRA_MSG);
             setPixel(message);
             return START_NOT_STICKY ;
@@ -151,7 +152,7 @@ public class GaletService extends LifecycleService {
             case READY:
                 updateNotification("READY");
                 Log.d(TAG, "READY");
-                setPixel("green");
+                setPixel("f:0000ff:00ff00/");
                 break;
             case DISCONNECTED:
                 updateNotification("DISCONNECTED");

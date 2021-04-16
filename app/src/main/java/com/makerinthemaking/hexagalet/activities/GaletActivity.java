@@ -1,4 +1,4 @@
-package com.makerinthemaking.hexagalet;
+package com.makerinthemaking.hexagalet.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,29 +11,31 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.makerinthemaking.hexagalet.R;
+import com.makerinthemaking.hexagalet.adapter.DiscoveredBluetoothDevice;
+import com.makerinthemaking.hexagalet.viewmodels.GaletViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
-import com.makerinthemaking.hexagalet.adapter.DiscoveredBluetoothDevice ;
-import com.makerinthemaking.hexagalet.viewmodels.BlinkyViewModel;
+
+
 @SuppressWarnings("ConstantConditions")
-public class BlinkyActivity extends AppCompatActivity {
+
+public class GaletActivity extends AppCompatActivity {
     public static final String EXTRA_DEVICE = "no.nordicsemi.android.blinky.EXTRA_DEVICE";
 
-    private BlinkyViewModel viewModel;
+    private GaletViewModel viewModel;
 
-    @BindView(R.id.led_switch) SwitchMaterial led;
-    @BindView(R.id.button_state) TextView buttonState;
+    @BindView(R.id.galet_led_switch)
+    SwitchMaterial led;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_blinky);
-        led = findViewById(R.id.led_switch);
-        buttonState = findViewById(R.id.button_state);
         ButterKnife.bind(this);
 
         final Intent intent = getIntent();
@@ -48,7 +50,7 @@ public class BlinkyActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Configure the view model.
-        viewModel = new ViewModelProvider(this).get(BlinkyViewModel.class);
+        viewModel = new ViewModelProvider(this).get(GaletViewModel.class);
         viewModel.connect(device);
 
         // Set up views.
@@ -57,8 +59,9 @@ public class BlinkyActivity extends AppCompatActivity {
         final TextView connectionState = findViewById(R.id.connection_state);
         final View content = findViewById(R.id.device_container);
         final View notSupported = findViewById(R.id.not_supported);
+        led = findViewById(R.id.led_switch);
 
-        led.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setLedState(isChecked));
+        led.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setPixel(true));
         viewModel.getConnectionState().observe(this, state -> {
             switch (state.getState()) {
                 case CONNECTING:
@@ -88,13 +91,6 @@ public class BlinkyActivity extends AppCompatActivity {
                     break;
             }
         });
-        viewModel.getLedState().observe(this, isOn -> {
-            ledState.setText(isOn ? R.string.turn_on : R.string.turn_off);
-            led.setChecked(isOn);
-        });
-        viewModel.getButtonState().observe(this,
-                pressed -> buttonState.setText(pressed ?
-                        R.string.button_pressed : R.string.button_released));
     }
 
     @OnClick(R.id.action_clear_cache)
@@ -103,10 +99,10 @@ public class BlinkyActivity extends AppCompatActivity {
     }
 
     private void onConnectionStateChanged(final boolean connected) {
-        led.setEnabled(connected);
+  //      led.setEnabled(connected);
         if (!connected) {
-            led.setChecked(false);
-            buttonState.setText(R.string.button_unknown);
+
+            // TODO : should we do smt ?
         }
     }
 }

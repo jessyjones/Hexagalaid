@@ -1,4 +1,4 @@
-package com.makerinthemaking.hexagalet;
+package com.makerinthemaking.hexagalet.activities;
 
 
 import android.Manifest;
@@ -23,9 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.makerinthemaking.hexagalet.R;
 import com.makerinthemaking.hexagalet.adapter.DevicesAdapter;
 import com.makerinthemaking.hexagalet.adapter.DiscoveredBluetoothDevice;
 import com.makerinthemaking.hexagalet.constants.Constants;
+import com.makerinthemaking.hexagalet.services.GaletService;
 import com.makerinthemaking.hexagalet.utils.Utils;
 import com.makerinthemaking.hexagalet.viewmodels.ScannerStateLiveData;
 import com.makerinthemaking.hexagalet.viewmodels.ScannerViewModel;
