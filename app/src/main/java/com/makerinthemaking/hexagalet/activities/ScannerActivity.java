@@ -34,7 +34,6 @@ import com.makerinthemaking.hexagalet.viewmodels.ScannerViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class ScannerActivity extends AppCompatActivity implements DevicesAdapter.OnItemClickListener {
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1022; // random number
@@ -66,6 +65,9 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
         noLocationPermissionView  = findViewById(R.id.no_location_permission);
         grantPermissionButton = findViewById(R.id.action_grant_location_permission);
         permissionSettingsButton = findViewById(R.id.action_permission_settings);
+        noLocationPermissionView.setOnClickListener(this::onClick);
+        scanningView.setOnClickListener(this::onClick);
+        emptyView.setOnClickListener(this::onClick);
         noLocationView = findViewById(R.id.no_location);
         noBluetoothView = findViewById(R.id.bluetooth_off);
 
@@ -81,7 +83,7 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-//        scannerViewModel.filterByUuid(false);
+        scannerViewModel.filterByUuid(true);
         final DevicesAdapter adapter = new DevicesAdapter(this, scannerViewModel.getDevices());
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
@@ -102,15 +104,9 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
     @Override
     public void onItemClick(@NonNull final DiscoveredBluetoothDevice device) {
 
-/*
-       final Intent controlBlinkIntent = new Intent(this, GaletActivity.class);
-        controlBlinkIntent.putExtra(GaletActivity.EXTRA_DEVICE, device);
-        startActivity(controlBlinkIntent);
-
-*/
         Log.d("ScannerActivity", "Launching");
 
-        Intent i = new Intent(this, GaletService.class);
+        final Intent i = new Intent(this, GaletService.class);
         i.putExtra(GaletActivity.EXTRA_DEVICE, device);
         i.setAction(Constants.STARTFOREGROUND_ACTION);
 
@@ -119,12 +115,20 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
         } else {
             startService(i);
         }
+    }
 
-        /*final Intent controlBlinkIntent = new Intent(this, GaletService.class);
-        controlBlinkIntent.putExtra(GaletActivity.EXTRA_DEVICE, device);
-        startForegroundService(controlBlinkIntent);
-
-         */
+    @Override
+    public void onClick(View view) {
+        if (view.equals(permissionSettingsButton))
+        {
+            onGrantLocationPermissionClicked();
+        } else if (view.equals(findViewById(R.id.action_enable_bluetooth)))
+        {
+            onEnableBluetoothClicked();
+        } else if (view.equals(findViewById(R.id.action_enable_location)))
+        {
+            onEnableLocationClicked();
+        }
     }
 
     @Override
@@ -137,19 +141,16 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
         }
     }
 
-    @OnClick(R.id.action_enable_location)
     public void onEnableLocationClicked() {
         final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivity(intent);
     }
 
-    @OnClick(R.id.action_enable_bluetooth)
     public void onEnableBluetoothClicked() {
         final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivity(enableIntent);
     }
 
-    @OnClick(R.id.action_grant_location_permission)
     public void onGrantLocationPermissionClicked() {
         Utils.markLocationPermissionRequested(this);
         ActivityCompat.requestPermissions(
@@ -158,7 +159,6 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
                 REQUEST_ACCESS_FINE_LOCATION);
     }
 
-    @OnClick(R.id.action_permission_settings)
     public void onPermissionSettingsClicked() {
         final Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.fromParts("package", getPackageName(), null));
@@ -179,8 +179,11 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
                 noBluetoothView.setVisibility(View.GONE);
 
                 // We are now OK to start scanning.
-                scannerViewModel.startScan();
-                scanningView.setVisibility(View.VISIBLE);
+                if(!state.isScanning())
+                {
+                    scannerViewModel.startScan();
+                    scanningView.setVisibility(View.VISIBLE);
+                }
 
                 if (!state.hasRecords()) {
                     emptyView.setVisibility(View.VISIBLE);

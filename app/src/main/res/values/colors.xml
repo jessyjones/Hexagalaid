@@ -14,7 +14,7 @@
     <!-- Base theme colors -->
     <color name="colorPrimary">@color/nordicBlue</color>
     <color name="colorOnPrimary">@color/white</color>
-    <color name="colorAccentOnPrimary">@color/white</color>
+    <color name="colorAccentOnPrimary">@color/black</color>
     <color name="colorSecondary">@color/nordicLake</color>
     <color name="colorStatusBar">@color/nordicBlueDark</color>
 
@@ -31,4 +31,5 @@
     <color name="colorNordicLogoBottom">@color/white</color>
     <color name="colorNordicLogoTop">@color/nordicLightGray</color>
 
+    <color name="background">#dddddd</color>
 </resources>

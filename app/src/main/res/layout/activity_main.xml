@@ -4,13 +4,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
-        <android.widget.ListView
-            android:id="@+id/MainListView"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            app:layout_constraintEnd_toEndOf="parent"
+        <TextView
+            android:id="@+id/introText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TEXTTEXTTEXT"
+            android:textColor="@color/nordicDarkGray"
+            app:layout_constraintBottom_toTopOf="@+id/main_scannerButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="TEXTTEXTTEXT" />
+
+
+        <Button
+            android:id="@+id/main_scannerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Scanner"
+            app:layout_constraintBottom_toTopOf="@+id/main_blestatus"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/introText" />
+
+        <TextView
+            android:id="@+id/main_blestatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@color/nordicDarkGray"
+            app:layout_constraintBottom_toTopOf="@+id/main_appsButton"
+            app:layout_constraintTop_toBottomOf="@+id/main_scannerButton"
+            tools:layout_editor_absoluteX="81dp" />
+
+        <Button
+            android:id="@+id/main_appsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apps"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_blestatus" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

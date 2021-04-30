@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -14,20 +13,17 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.makerinthemaking.hexagalet.profile.callback.GaletBatteryDataCallback;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
-import no.nordicsemi.android.ble.PhyRequest;
-import no.nordicsemi.android.ble.Request;
 import no.nordicsemi.android.ble.data.Data;
 import no.nordicsemi.android.ble.livedata.ObservableBleManager;
 import no.nordicsemi.android.log.LogContract;
 import no.nordicsemi.android.log.LogSession;
-import no.nordicsemi.android.log.Logger;
 
-public class GaletManager extends ObservableBleManager {
+
+
+ public class GaletManager extends ObservableBleManager {
+
 
     public final static UUID UART_UUID_SERVICE = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
     /** TODO Add Neopixel characteristic UUID. */

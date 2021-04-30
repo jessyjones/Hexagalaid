@@ -1,16 +1,18 @@
 package com.makerinthemaking.hexagalet.viewmodels;
 
 
+import android.os.ParcelUuid;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import android.os.ParcelUuid;
+
+import com.makerinthemaking.hexagalet.adapter.DiscoveredBluetoothDevice;
+import com.makerinthemaking.hexagalet.profile.GaletManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.makerinthemaking.hexagalet.adapter.DiscoveredBluetoothDevice ;
-import com.makerinthemaking.hexagalet.profile.BlinkyManager;
 import no.nordicsemi.android.support.v18.scanner.ScanRecord;
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
@@ -21,7 +23,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
  */
 @SuppressWarnings("unused")
 public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
-    private static final ParcelUuid FILTER_UUID = new ParcelUuid(BlinkyManager.LBS_UUID_SERVICE);
+    private static final ParcelUuid FILTER_UUID = new ParcelUuid(GaletManager.UART_UUID_SERVICE);
     private static final int FILTER_RSSI = -50; // [dBm]
 
     @NonNull
@@ -84,6 +86,11 @@ public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
         filteredDevices = tmp;
         postValue(filteredDevices);
         return !filteredDevices.isEmpty();
+    }
+
+    /* package */  boolean filterByUuid(final boolean uuidRequired) {
+        filterUuidRequired = uuidRequired;
+        return applyFilter();
     }
 
     /**

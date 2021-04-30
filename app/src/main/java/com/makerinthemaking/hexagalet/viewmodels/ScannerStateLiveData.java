@@ -58,7 +58,7 @@ public class ScannerStateLiveData extends LiveData<ScannerStateLiveData> {
     /**
      * Returns whether scanning is in progress.
      */
-    boolean isScanning() {
+    public boolean isScanning() {
         return scanningStarted;
     }
 

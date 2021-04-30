@@ -37,6 +37,9 @@
             </intent-filter>
 
         </activity>
+        <activity android:name=".activities.PreferencesActivity">
+
+        </activity>
         <activity
             android:name=".activities.BlinkyActivity"
             android:launchMode="singleTop"

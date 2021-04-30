@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        >
+
+        <View
+            android:id="@+id/thumbnail"
+            android:layout_width="@dimen/placeholderImage"
+            android:layout_height="@dimen/placeholderImage"
+            android:layout_marginRight="@dimen/activityPadding"
+            android:layout_marginTop="@dimen/padding_10"
+            android:background="@color/background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/thumbnail"
+            android:layout_marginTop="@dimen/padding_10"
+            android:orientation="vertical"
+            app:layout_constraintStart_toEndOf="@id/thumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+            <View
+                android:layout_width="100dp"
+                android:id="@+id/placeHolderText"
+                android:layout_height="@dimen/placeholderTextHeight"
+                android:background="@color/background"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+            <View
+                android:layout_width="30dp"
+                android:layout_height="@dimen/placeholderTextHeight"
+                android:layout_marginTop="5dp"
+                android:background="@color/background"
+                app:layout_constraintStart_toEndOf="@id/placeHolderText"
+                />
+        </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

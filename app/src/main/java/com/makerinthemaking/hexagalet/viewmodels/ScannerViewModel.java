@@ -13,10 +13,9 @@ import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import java.util.List;
-
-
 import com.makerinthemaking.hexagalet.utils.Utils;
+
+import java.util.List;
 
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;
@@ -48,7 +47,6 @@ public class ScannerViewModel extends AndroidViewModel {
         super(application);
         preferences = PreferenceManager.getDefaultSharedPreferences(application);
 
-
         scannerStateLiveData = new ScannerStateLiveData(Utils.isBleEnabled(),
                 Utils.isLocationEnabled(application));
         devicesLiveData = new DevicesLiveData();
@@ -69,7 +67,7 @@ public class ScannerViewModel extends AndroidViewModel {
     /**
      * Forces the observers to be notified. This method is used to refresh the screen after the
      * location permission has been granted. In result, the observer in
-     * {@link com.makerinthemaking.hexagalet.ScannerActivity} will try to start scanning.
+     * {@link com.makerinthemaking.hexagalet.activities.ScannerActivity} will try to start scanning.
      */
     public void refresh() {
         scannerStateLiveData.refresh();
@@ -108,6 +106,13 @@ public class ScannerViewModel extends AndroidViewModel {
         }
     }
 
+    public void filterByUuid(final boolean uuidRequired) {
+        if (devicesLiveData.filterByUuid(uuidRequired))
+            scannerStateLiveData.recordFound();
+        else
+            scannerStateLiveData.clearRecords();
+    }
+
     private final ScanCallback scanCallback = new ScanCallback() {
         @Override
         public void onScanResult(final int callbackType, @NonNull final ScanResult result) {
@@ -122,6 +127,8 @@ public class ScannerViewModel extends AndroidViewModel {
                 scannerStateLiveData.recordFound();
             }
         }
+
+
 
         @Override
         public void onBatchScanResults(@NonNull final List<ScanResult> results) {
