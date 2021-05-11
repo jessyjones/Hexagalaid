@@ -115,6 +115,8 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
         } else {
             startService(i);
         }
+
+        finish();
     }
 
     @Override

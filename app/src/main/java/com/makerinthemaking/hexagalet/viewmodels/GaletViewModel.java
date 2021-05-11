@@ -19,7 +19,8 @@ public class GaletViewModel extends AndroidViewModel {
     public GaletViewModel(@NonNull final Application application) {
         super(application);
         // Initialize the manager.
-        galetManager = new GaletManager(getApplication());
+        galetManager  = GaletManager.Companion.getInstance(application.getApplicationContext());
+
     }
 
     public LiveData<ConnectionState> getConnectionState() {

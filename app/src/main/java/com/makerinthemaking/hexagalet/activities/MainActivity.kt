@@ -29,8 +29,8 @@ class MainActivity : AppCompatActivity() {
         loggingTag = getString(R.string.app_name)
         Log.i(loggingTag, "starting up")
 
-        var scannerButton : Button = findViewById(R.id.main_scannerButton)
-        var appsButton : Button = findViewById(R.id.main_appsButton)
+        val scannerButton : Button = findViewById(R.id.main_scannerButton)
+        val appsButton : Button = findViewById(R.id.main_appsButton)
         mConnectionStatus = findViewById(R.id.main_blestatus)
 
         // TODO : make it work without delay
@@ -53,11 +53,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (mGaletmanager == null) {
-            mGaletmanager = GaletManager(application)
+            mGaletmanager = GaletManager.getInstance(applicationContext)
         }
-        getConnectionState()!!.observe(this, connectionStateObserver)
-        updateText("TEXT")
 
+        Log.e(TAG, "GaletManager instance " + mGaletmanager.toString())
+
+        getConnectionState().observe(this, connectionStateObserver)
+        updateText("TEXT")
 
     }
 
@@ -89,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "DISCONNECTED")
                     if (state is ConnectionState.Disconnected) {
                         val stateWithReason: ConnectionState.Disconnected =
-                            state as ConnectionState.Disconnected
+                            state
                         if (stateWithReason.isNotSupported) {
                             Log.d(TAG, "DISCONNECTED")
                         }

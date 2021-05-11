@@ -33,7 +33,7 @@ public class GaletService extends LifecycleService {
     public static final String EXTRA_DEVICE = "no.nordicsemi.android.blinky.EXTRA_DEVICE";
     public static final String EXTRA_MSG = "com.makerinthemaking.hexagalet.MSG";
 
-    private GaletManager galetManager;
+    private GaletManager galetManager ;
     private BluetoothDevice device;
 
     @Nullable
@@ -51,8 +51,9 @@ public class GaletService extends LifecycleService {
     public void onCreate() {
         Log.d(TAG, "onCreate");
         if(galetManager == null){
-            galetManager = new GaletManager(getApplication());
+            galetManager = GaletManager.Companion.getInstance(getApplicationContext());
         }
+        Log.e(TAG, "GaletManager instance " + galetManager.toString());
         super.onCreate();
     }
 
@@ -152,7 +153,6 @@ public class GaletService extends LifecycleService {
             case READY:
                 updateNotification("READY");
                 Log.d(TAG, "READY");
-                setPixel("f:0000ff:00ff00/");
                 break;
             case DISCONNECTED:
                 updateNotification("DISCONNECTED");

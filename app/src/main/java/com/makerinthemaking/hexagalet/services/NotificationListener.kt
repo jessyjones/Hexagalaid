@@ -8,18 +8,17 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.makerinthemaking.hexagalet.activities.DBHelper
 import com.makerinthemaking.hexagalet.constants.Constants
-import com.makerinthemaking.hexagalet.services.GaletService
 import java.util.*
 
 
 class NotificationListener : NotificationListenerService() {
-    var mydb: DBHelper? = null
+    var mydbHelper: DBHelper? = null
     var TAG :String = "NotificationListener";
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         Log.i(TAG, "Listener onCreate")
-        mydb = DBHelper(applicationContext)
+        mydbHelper = DBHelper(applicationContext)
         super.onCreate()
     }
     override fun onListenerConnected(): Unit
@@ -40,7 +39,7 @@ class NotificationListener : NotificationListenerService() {
         val messageIntent = Intent(this, GaletService::class.java)
         messageIntent.action = Constants.SENDTEXT
 
-        var commande:String = "f:0000ff:00ff00/"
+       // var commande:String = "f:0000ff:00ff00/"
 /*
         if(sbn.packageName.equals("com.Slack"))
         {
@@ -58,8 +57,13 @@ class NotificationListener : NotificationListenerService() {
             commande = "d:" + colorCode +":" + colorCode + "/"
         }
 */
-        //val commande: String? = this.mydb?.getCommand(sbn.packageName);
+        var commande: String? = this.mydbHelper?.getCommand(sbn.packageName);
+        if(sbn.packageName.equals("com.zulipmobile")){
+            commande = "r:00ff00:00ff00/"
+        }
         messageIntent.putExtra(GaletService.EXTRA_MSG, commande)
+        Log.i(TAG, "sending command  ${commande} ")
+
         startService(messageIntent);
     }
 

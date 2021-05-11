@@ -57,4 +57,5 @@ dependencies {
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
     implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
+    implementation 'com.github.QuadFlask:colorpicker:0.0.15'
 }

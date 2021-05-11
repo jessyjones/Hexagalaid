@@ -38,7 +38,7 @@ class PreferencesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preferences)
-        loggingTag = getString(R.string.app_name)
+        loggingTag = "PreferencesActivity"
         Log.i(loggingTag, "starting up")
 
      //   initStore() ;
@@ -79,10 +79,10 @@ class PreferencesActivity : AppCompatActivity() {
         super.onStop()
     }
 
-    private fun getInstalledApps() :ArrayList<PreferencesActivity.AppSetting>{
+    private fun getInstalledApps() :ArrayList<AppSetting>{
         val list = packageManager.getInstalledPackages(0)
-        val apps = ArrayList<PreferencesActivity.AppSetting>()
-
+        val apps = ArrayList<AppSetting>()
+        val random = Random(123)
         for (i in list.indices) {
             val packageInfo = list[i]
             if(packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0)
@@ -90,25 +90,18 @@ class PreferencesActivity : AppCompatActivity() {
                 val appName = packageInfo.applicationInfo.loadLabel(packageManager).toString()
                 val appPackage = packageInfo.packageName
                 val appImage = packageInfo.applicationInfo.loadIcon(packageManager)
-                val app = PreferencesActivity.AppSetting(appName, appImage, "")
+                val app = AppSetting(appName, appImage, "")
                 apps.add(app)
                 val palette = Palette.from(appImage.toBitmap(50, 50)).generate()
                 val color_1 = palette.getVibrantColor(Color.WHITE);
                 val color_2 = palette.getLightVibrantColor(Color.YELLOW);
-                var colorCode_1 = String.format("#%06x", 0xFFFFFF and color_1)
-                var colorCode_2 = String.format("#%06x", 0xFFFFFF and color_2)
+                var colorCode_1 = String.format("%06x", 0xFFFFFF and color_1)
+                var colorCode_2 = String.format("%06x", 0xFFFFFF and color_2)
+                val letter = random.nextInt(4)
                 val commande = "g:$colorCode_1:$colorCode_2/"
                 Log.d(loggingTag, "$appName -  $commande")
                 app.setCommand(commande)
-
-/*
-                val random = Random()
-                val nextInt = random.nextInt(0xffffff + 1)
-                val colorCode = String.format("#%06x", nextInt)
-                val commande = "g:" + colorCode + colorCode + "/"
-                app.setCommand(commande)
-                mydb!!.insertApp(appPackage, colorCode)
-                */
+                mydb!!.insertApp(appPackage, commande)
 
             }
 
@@ -140,44 +133,42 @@ class PreferencesActivity : AppCompatActivity() {
         override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View {
             var view = view
             if (view == null) {
-                //inflate layout resource if its null
                 view = LayoutInflater.from(c).inflate(R.layout.appsettingslayout, viewGroup, false)
             }
 
             val currentAppSetting = this.getItem(i) as AppSetting
 
-            val img = view!!.findViewById<ImageView>(R.id.itemImageView) as ImageView
-            val nameTxt = view.findViewById<TextView>(R.id.itemTextView) as TextView
+            val img = view!!.findViewById(R.id.itemImageView) as ImageView
+            val nameTxt = view.findViewById(R.id.itemTextView) as TextView
 
             nameTxt.text = currentAppSetting.getName()
             img.setImageDrawable(currentAppSetting.getImage())
 
             view.setOnClickListener { Toast.makeText(
                 c,
-                currentAppSetting.getName(),
-                Toast.LENGTH_SHORT
+                currentAppSetting.getCommand(),
+                Toast.LENGTH_LONG
             ).show() }
 
             return view
         }
     }
 }
-public class DBHelper(context: Context?) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, 2) {
+
+class DBHelper(context: Context?) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, 4) {
     val TAG :String = "DBHelper"
-    //        private val hp: HashMap? = null
+
     override fun onCreate(db: SQLiteDatabase) {
         Log.d(TAG, "onCreate")
-        // TODO Auto-generated method stub
         db.execSQL(
-            "create table apps " +
+            "create table " + APP_TABLE_NAME +
                     "( packageName text primary key, command text)"
         )
-      //  closeDatabase(db)
+        closeDatabase(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // TODO Auto-generated method stub
         db.execSQL("DROP TABLE IF EXISTS apps")
         onCreate(db)
     }
@@ -191,27 +182,22 @@ public class DBHelper(context: Context?) :
         val contentValues = ContentValues()
         contentValues.put("packageName", packageName)
         contentValues.put("command", command)
-        db.insertWithOnConflict("apps", null, contentValues, CONFLICT_REPLACE)
-  //      closeDatabase(db)
+        db.insertWithOnConflict(APP_TABLE_NAME, null, contentValues, CONFLICT_REPLACE)
+        closeDatabase(db)
         return true
     }
 
-    fun getData(packageId: String): Cursor {
+    fun getData(packageId: String, database: SQLiteDatabase): Cursor {
         Log.d(TAG, "getData")
-
-        val db = this.readableDatabase
-        val num = DatabaseUtils.queryNumEntries(db, CONTACTS_TABLE_NAME).toInt()
+        val num = DatabaseUtils.queryNumEntries(database, APP_TABLE_NAME).toInt()
         Log.d(TAG, num.toString())
-//        closeDatabase(db)
-//        return db.rawQuery("select * from apps where 'packageName' LIKE $packageId", null)
-        val c = db.rawQuery("SELECT * FROM apps WHERE packageName = ?", arrayOf(packageId))
-
-        return c;
+        return database.rawQuery("SELECT * FROM apps WHERE packageName = ?", arrayOf(packageId));
     }
 
     fun getCommand(packageId: String): String {
         Log.d(TAG, "getCommand")
-        var returnData = getData(packageId)
+        val db = this.readableDatabase
+        var returnData = getData(packageId, db)
         returnData.moveToFirst()
         var id: String = "f:00ffff:00ff00/"
         if( returnData != null && returnData.moveToFirst() )
@@ -222,13 +208,14 @@ public class DBHelper(context: Context?) :
         {
             Log.d("DB", "unknown package")
         }
+        closeDatabase(db)
         return id
     }
 
     fun numberOfRows(): Int {
         val db = this.readableDatabase
-        return DatabaseUtils.queryNumEntries(db, CONTACTS_TABLE_NAME).toInt()
-//        closeDatabase(db)
+        return DatabaseUtils.queryNumEntries(db, APP_TABLE_NAME).toInt()
+        closeDatabase(db)
     }
 
     val allCotacts: ArrayList<String>
@@ -238,10 +225,10 @@ public class DBHelper(context: Context?) :
             val res: Cursor = db.rawQuery("select * from apps", null)
             res.moveToFirst()
             while (res.isAfterLast() === false) {
-                array_list.add(res.getString(res.getColumnIndex(CONTACTS_COLUMN_NAME)))
+                array_list.add(res.getString(res.getColumnIndex(APP_COLUMN_NAME)))
                 res.moveToNext()
             }
-      //      closeDatabase(db)
+            closeDatabase(db)
             return array_list
         }
 
@@ -252,8 +239,8 @@ public class DBHelper(context: Context?) :
     }
     companion object {
         const val DATABASE_NAME = "MyDBName.db"
-        const val CONTACTS_TABLE_NAME = "apps"
-        const val CONTACTS_COLUMN_NAME = "packageName"
+        const val APP_TABLE_NAME = "apps"
+        const val APP_COLUMN_NAME = "packageName"
 
     }
 }
